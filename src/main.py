@@ -34,13 +34,14 @@ class Nifty100Tracker:
         self.allocator = Allocator()
         self.logger = logging.getLogger(__name__)
     
-    def run(self, investment_amount: float, securities_file: str = None) -> str:
+    def run(self, investment_amount: float, securities_file: str = None, exclusion_file: str = None) -> str:
         """
         Run the complete index tracking process
         
         Args:
             investment_amount: Total amount to invest in INR
             securities_file: Path to securities CSV file (optional)
+            exclusion_file: Path to exclusion list CSV file (optional)
             
         Returns:
             Path to generated output file
@@ -49,12 +50,20 @@ class Nifty100Tracker:
             print_separator("NIFTY 100 INDEX TRACKER", "=", 60)
             print(f"Investment Amount: ₹{investment_amount:,.2f}")
             print(f"Start Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            if exclusion_file:
+                print(f"Exclusion List: {exclusion_file}")
             print_separator()
             
             # Step 1: Load securities
             self.logger.info("Step 1: Loading securities data")
             securities = self.csv_handler.load_securities_from_csv(securities_file)
             print(f"✓ Loaded {len(securities)} securities")
+            
+            # Step 1.5: Filter out excluded securities if exclusion list provided
+            if exclusion_file:
+                self.logger.info("Step 1.5: Filtering excluded securities")
+                securities = self.csv_handler.filter_excluded_securities(securities, exclusion_file)
+                print(f"✓ Filtered securities: {len(securities)} remaining after exclusions")
             
             # Step 2: Fetch current prices
             self.logger.info("Step 2: Fetching current market prices")
@@ -120,6 +129,13 @@ def create_sample_data():
     print("✓ Sample securities data created")
 
 
+def create_sample_exclusion_data():
+    """Create sample exclusion list data file for testing"""
+    csv_handler = CSVHandler()
+    exclusion_file = csv_handler.create_sample_exclusion_csv()
+    print(f"✓ Sample exclusion data created at {exclusion_file}")
+
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
@@ -129,7 +145,9 @@ def main():
 Examples:
   %(prog)s --amount 100000                    # Invest ₹1,00,000
   %(prog)s --amount 50000 --securities data/custom.csv  # Use custom securities file
+  %(prog)s --amount 100000 --exclusion data/exclusions.csv  # Exclude specific securities
   %(prog)s --create-sample                    # Create sample data file
+  %(prog)s --create-exclusion-sample          # Create sample exclusion file
   %(prog)s --interactive                      # Interactive mode
         """
     )
@@ -147,6 +165,12 @@ Examples:
     )
     
     parser.add_argument(
+        '--exclusion', '-e',
+        type=str,
+        help='Path to exclusion list CSV file (optional)'
+    )
+    
+    parser.add_argument(
         '--interactive', '-i',
         action='store_true',
         help='Run in interactive mode'
@@ -156,6 +180,12 @@ Examples:
         '--create-sample',
         action='store_true',
         help='Create sample securities CSV file and exit'
+    )
+    
+    parser.add_argument(
+        '--create-exclusion-sample',
+        action='store_true',
+        help='Create sample exclusion list CSV file and exit'
     )
     
     parser.add_argument(
@@ -181,6 +211,11 @@ Examples:
         create_sample_data()
         return
     
+    # Handle sample exclusion data creation
+    if args.create_exclusion_sample:
+        create_sample_exclusion_data()
+        return
+    
     # Get investment amount
     if args.interactive or args.amount is None:
         print_separator("NIFTY 100 INDEX TRACKER", "=", 60)
@@ -204,7 +239,7 @@ Examples:
     # Run the tracker
     try:
         tracker = Nifty100Tracker()
-        output_file = tracker.run(amount, args.securities)
+        output_file = tracker.run(amount, args.securities, args.exclusion)
         
         print(f"\n🎉 Index tracking completed successfully!")
         print(f"📁 Output saved to: {output_file}")

@@ -69,6 +69,51 @@ class CSVHandler:
             self.logger.error(f"Error reading CSV file: {str(e)}")
             raise
     
+    def filter_excluded_securities(self, securities: List[Security], exclusion_file: str) -> List[Security]:
+        """
+        Filter out excluded securities from the main securities list
+        
+        Args:
+            securities: List of Security objects to filter
+            exclusion_file: Path to exclusion list CSV file
+            
+        Returns:
+            Filtered list of Security objects with exclusions removed
+        """
+        self.logger.info(f"Loading exclusion list from {exclusion_file}")
+        
+        if not os.path.exists(exclusion_file):
+            self.logger.error(f"Exclusion file not found: {exclusion_file}")
+            raise FileNotFoundError(f"Exclusion file not found: {exclusion_file}")
+        
+        # Load exclusion list
+        excluded_securities = self.load_securities_from_csv(exclusion_file)
+        
+        # Create sets for efficient lookup
+        excluded_symbols = {sec.symbol.upper() for sec in excluded_securities}
+        excluded_isins = {sec.isin for sec in excluded_securities}
+        
+        self.logger.info(f"Loaded {len(excluded_securities)} securities to exclude")
+        self.logger.info(f"Excluded symbols: {', '.join(sorted(excluded_symbols))}")
+        
+        # Filter out excluded securities
+        original_count = len(securities)
+        filtered_securities = []
+        excluded_count = 0
+        
+        for security in securities:
+            if (security.symbol.upper() in excluded_symbols or 
+                security.isin in excluded_isins):
+                self.logger.info(f"Excluding security: {security.symbol} ({security.company_name})")
+                excluded_count += 1
+            else:
+                filtered_securities.append(security)
+        
+        self.logger.info(f"Filtered {excluded_count} securities from original {original_count}")
+        self.logger.info(f"Remaining securities: {len(filtered_securities)}")
+        
+        return filtered_securities
+    
     def save_portfolio_to_csv(self, portfolio: Portfolio, output_filename: Optional[str] = None) -> str:
         """
         Save portfolio allocation results to CSV
@@ -246,4 +291,41 @@ class CSVHandler:
             writer.writerows(sample_data)
         
         self.logger.info(f"Sample securities CSV created at {NIFTY100_SECURITIES_FILE}")
-        return NIFTY100_SECURITIES_FILE 
+        return NIFTY100_SECURITIES_FILE
+    
+    def create_sample_exclusion_csv(self, exclusion_file: str = "data/sample_exclusions.csv") -> str:
+        """
+        Create a sample exclusion list CSV file for testing
+        
+        Args:
+            exclusion_file: Path for the exclusion file (default: data/sample_exclusions.csv)
+            
+        Returns:
+            Path to created exclusion file
+        """
+        sample_exclusion_data = [
+            {
+                'Company Name': 'Adani Enterprises Ltd.',
+                'Industry': 'Metals & Mining',
+                'Symbol': 'ADANIENT',
+                'Series': 'EQ',
+                'ISIN Code': 'INE423A01024'
+            },
+            {
+                'Company Name': 'Adani Ports and Special Economic Zone Ltd.',
+                'Industry': 'Services',
+                'Symbol': 'ADANIPORTS',
+                'Series': 'EQ',
+                'ISIN Code': 'INE742F01042'
+            }
+        ]
+        
+        os.makedirs(os.path.dirname(exclusion_file), exist_ok=True)
+        
+        with open(exclusion_file, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=SECURITY_CSV_HEADERS)
+            writer.writeheader()
+            writer.writerows(sample_exclusion_data)
+        
+        self.logger.info(f"Sample exclusion CSV created at {exclusion_file}")
+        return exclusion_file 

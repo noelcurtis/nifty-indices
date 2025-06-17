@@ -35,11 +35,12 @@ class Allocator:
         
         portfolio = Portfolio(total_investment=total_investment)
         
-        # Calculate per-security allocation amount
-        per_security_amount = total_investment / TOTAL_SECURITIES
-        allocation_percentage = EQUAL_WEIGHT_PERCENTAGE
+        # Calculate per-security allocation amount based on actual number of securities
+        num_securities = len(securities)
+        per_security_amount = total_investment / num_securities
+        allocation_percentage = 100.0 / num_securities  # Equal weight percentage
         
-        self.logger.info(f"Target allocation per security: ₹{per_security_amount:,.2f} ({allocation_percentage}%)")
+        self.logger.info(f"Target allocation per security: ₹{per_security_amount:,.2f} ({allocation_percentage:.4f}%) for {num_securities} securities")
         
         timestamp = datetime.now()
         

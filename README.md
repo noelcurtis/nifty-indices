@@ -45,6 +45,12 @@ python src/main.py --amount 100000
 # Use a custom securities file
 python src/main.py --amount 50000 --securities data/custom_securities.csv
 
+# Exclude specific securities from the index
+python src/main.py --amount 100000 --exclusion data/exclusions.csv
+
+# Combine custom securities and exclusion lists
+python src/main.py --amount 1100000 --securities data/nifty100_securities.csv --exclusion data/nifty100_exclusions.csv
+
 # Interactive mode
 python src/main.py --interactive
 ```
@@ -59,6 +65,9 @@ python src/main.py --amount 100000 --log-file tracker.log
 
 # Create sample securities data
 python src/main.py --create-sample
+
+# Create sample exclusion list
+python src/main.py --create-exclusion-sample
 ```
 
 ### Interactive Mode
@@ -72,7 +81,21 @@ python src/main.py --interactive
 ### Input Requirements
 
 - **Investment Amount**: Minimum ₹1,000, Maximum ₹10,00,00,000
-- **Securities File**: CSV with columns: `symbol`, `company_name`, `isin`, `market_cap`, `weightage`
+- **Securities File**: CSV with columns: `Company Name`, `Industry`, `Symbol`, `Series`, `ISIN Code`
+- **Exclusion File** (Optional): CSV with same format as securities file containing securities to exclude from the index
+
+### Security Exclusion Feature
+
+The application supports an optional exclusion list that allows you to filter out specific securities from the index:
+
+- **Format**: Same CSV format as the main securities file
+- **Matching**: Securities are matched by both Symbol and ISIN Code for accuracy
+- **Allocation**: Investment is redistributed equally among remaining securities
+- **Use Cases**: 
+  - Exclude sectors you don't want (e.g., tobacco, fossil fuels)
+  - Remove specific companies due to ESG concerns
+  - Filter out highly volatile or speculative stocks
+  - Create custom thematic indices
 
 ### Output Files
 
