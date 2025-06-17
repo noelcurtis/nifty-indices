@@ -1,0 +1,6 @@
+symbol,company_name,isin,market_cap,weightage
+RELIANCE,Reliance Industries Limited,INE002A01018,1500000.0,10.5
+TCS,Tata Consultancy Services Limited,INE467B01029,1200000.0,8.2
+INFY,Infosys Limited,INE009A01021,800000.0,6.1
+HDFCBANK,HDFC Bank Limited,INE040A01034,900000.0,7.8
+ICICIBANK,ICICI Bank Limited,INE090A01021,700000.0,5.5
