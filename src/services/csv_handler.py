@@ -5,6 +5,7 @@ CSV handling service for reading securities data and writing output files
 import csv
 import logging
 import os
+import json
 from typing import List, Optional
 from datetime import datetime
 
@@ -444,4 +445,96 @@ class CSVHandler:
         self.logger.info(f"Data hydration completed: {successful_fetches}/{len(securities_data)} successful ({success_rate:.1f}%)")
         self.logger.info(f"Enhanced data saved to {output_file}")
         
-        return output_file 
+        return output_file
+
+    def save_portfolio_to_json(self, portfolio: Portfolio, base_filename: Optional[str] = None) -> List[str]:
+        """
+        Save portfolio allocation results to batched JSON files
+        
+        Args:
+            portfolio: Portfolio object with allocation results
+            base_filename: Base filename for JSON files (generated if None)
+            
+        Returns:
+            List of paths to created JSON files
+        """
+        # Generate base filename if not provided
+        if base_filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            base_filename = f"nifty100_allocation_{timestamp}"
+        
+        # Create JSON output directory
+        json_output_dir = os.path.join(OUTPUT_DIR, "json_batches")
+        os.makedirs(json_output_dir, exist_ok=True)
+        
+        self.logger.info(f"Saving portfolio allocation to JSON files in {json_output_dir}")
+        
+        # Filter successful allocations (securities with valid prices and shares to buy)
+        successful_allocations = [
+            allocation for allocation in portfolio.allocation_results
+            if allocation.security.is_price_available() and allocation.shares_to_buy > 0
+        ]
+        
+        if not successful_allocations:
+            self.logger.warning("No successful allocations to save to JSON")
+            return []
+        
+        # Batch allocations into groups of 20
+        batch_size = 20
+        batches = [
+            successful_allocations[i:i + batch_size]
+            for i in range(0, len(successful_allocations), batch_size)
+        ]
+        
+        json_files = []
+        
+        for batch_num, batch in enumerate(batches, 1):
+            # Create filename for this batch
+            json_filename = f"{base_filename}_batch_{batch_num:02d}.json"
+            json_path = os.path.join(json_output_dir, json_filename)
+            
+            # Create JSON data for this batch
+            json_data = []
+            
+            for allocation in batch:
+                order_entry = {
+                    "instrument": {
+                        "exchange": "NSE",
+                        "symbol": allocation.security.symbol,
+                        "tradingsymbol": allocation.security.symbol,
+                        "type": "EQ"
+                    },
+                    "params": {
+                        "disclosedQuantity": 0,
+                        "gtt": None,
+                        "orderType": "MARKET",
+                        "price": 0,
+                        "product": "CNC",
+                        "quantity": allocation.shares_to_buy,
+                        "tags": [],
+                        "transactionType": "BUY",
+                        "triggerPrice": 0,
+                        "validity": "DAY",
+                        "validityTTL": 1,
+                        "variety": "regular"
+                    },
+                    "weight": 0
+                }
+                json_data.append(order_entry)
+            
+            # Write JSON file
+            try:
+                with open(json_path, 'w', encoding='utf-8') as jsonfile:
+                    json.dump(json_data, jsonfile, indent=2, ensure_ascii=False)
+                
+                json_files.append(json_path)
+                self.logger.info(f"Saved batch {batch_num}/{len(batches)} with {len(batch)} securities to {json_filename}")
+                
+            except Exception as e:
+                self.logger.error(f"Error writing JSON file {json_path}: {str(e)}")
+                continue
+        
+        total_securities = sum(len(batch) for batch in batches)
+        self.logger.info(f"Successfully created {len(json_files)} JSON batch files with {total_securities} total securities")
+        
+        return json_files 

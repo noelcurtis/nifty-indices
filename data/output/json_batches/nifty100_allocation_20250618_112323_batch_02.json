@@ -1,0 +1,462 @@
+[
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "DABUR",
+      "tradingsymbol": "DABUR",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 34,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "DRREDDY",
+      "tradingsymbol": "DRREDDY",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 12,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "EICHERMOT",
+      "tradingsymbol": "EICHERMOT",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 3,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "GAIL",
+      "tradingsymbol": "GAIL",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 88,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "GRASIM",
+      "tradingsymbol": "GRASIM",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 6,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HDFCBANK",
+      "tradingsymbol": "HDFCBANK",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 8,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HEROMOTOCO",
+      "tradingsymbol": "HEROMOTOCO",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 3,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HINDALCO",
+      "tradingsymbol": "HINDALCO",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 25,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HAL",
+      "tradingsymbol": "HAL",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 3,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HINDUNILVR",
+      "tradingsymbol": "HINDUNILVR",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 7,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "HYUNDAI",
+      "tradingsymbol": "HYUNDAI",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 8,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "ICICIBANK",
+      "tradingsymbol": "ICICIBANK",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 11,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "ICICIGI",
+      "tradingsymbol": "ICICIGI",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 8,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "ITC",
+      "tradingsymbol": "ITC",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 39,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "INDHOTEL",
+      "tradingsymbol": "INDHOTEL",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 21,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "IOC",
+      "tradingsymbol": "IOC",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 116,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "IRFC",
+      "tradingsymbol": "IRFC",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 120,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "INDUSINDBK",
+      "tradingsymbol": "INDUSINDBK",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 19,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "INDIGO",
+      "tradingsymbol": "INDIGO",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 3,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "JSWENERGY",
+      "tradingsymbol": "JSWENERGY",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 32,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  }
+]

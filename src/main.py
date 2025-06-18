@@ -11,6 +11,7 @@ import os
 import argparse
 import logging
 from datetime import datetime
+from typing import List
 
 # Add the project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -99,8 +100,11 @@ class Nifty100Tracker:
             print("\nGenerating output files...")
             output_file = self.csv_handler.save_portfolio_to_csv(portfolio)
             
+            # Generate JSON output files
+            json_files = self.csv_handler.save_portfolio_to_json(portfolio)
+            
             # Display summary
-            self._display_results_summary(portfolio, output_file)
+            self._display_results_summary(portfolio, output_file, json_files)
             
             return output_file
             
@@ -109,7 +113,7 @@ class Nifty100Tracker:
             print(f"\n❌ Error: {str(e)}")
             raise
     
-    def _display_results_summary(self, portfolio, output_file: str):
+    def _display_results_summary(self, portfolio, output_file: str, json_files: List[str]):
         """Display final results summary"""
         stats = portfolio.get_summary_stats()
         
@@ -119,6 +123,12 @@ class Nifty100Tracker:
         print(f"\n📁 Output Files Generated:")
         print(f"   • Portfolio Details: {output_file}")
         print(f"   • Summary Report: {output_file.replace('.csv', '_summary.txt')}")
+        
+        if json_files:
+            print(f"   • JSON Batch Files: {len(json_files)} files in data/output/json_batches/")
+            for i, json_file in enumerate(json_files, 1):
+                filename = os.path.basename(json_file)
+                print(f"     {i}. {filename}")
         
         # Display top allocations
         successful_allocations = [a for a in portfolio.allocation_results if a.security.is_price_available()]

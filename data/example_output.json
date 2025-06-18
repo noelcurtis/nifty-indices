@@ -1,0 +1,25 @@
+[
+    {
+        "instrument": {
+            "exchange": "NSE",
+            "symbol": "ABB",
+            "tradingsymbol": "ABB",
+            "type": "EQ"
+        },
+        "params": {
+            "disclosedQuantity": 0,
+            "gtt": null,
+            "orderType": "MARKET",
+            "price": 0,
+            "product": "CNC",
+            "quantity": 3,
+            "tags": [],
+            "transactionType": "BUY",
+            "triggerPrice": 0,
+            "validity": "DAY",
+            "validityTTL": 1,
+            "variety": "regular"
+        },
+        "weight": 0
+    } 
+]
