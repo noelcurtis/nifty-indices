@@ -20,6 +20,10 @@ NIFTY100_SECURITIES_FILE = "data/nifty100_securities_new.csv"
 PRICES_DIR = "data/prices"
 OUTPUT_DIR = "data/output"
 
+# Nifty100 Constituents Download
+NIFTY100_CONSTITUENTS_URL = "https://www.niftyindices.com/IndexConstituent/ind_nifty100list.csv"
+DEFAULT_CONSTITUENTS_DIR = "data"
+
 # Data formats
 PRICE_DECIMAL_PLACES = 2
 CURRENCY_DECIMAL_PLACES = 2

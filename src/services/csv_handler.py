@@ -6,6 +6,7 @@ import csv
 import logging
 import os
 import json
+import requests
 from typing import List, Optional
 from datetime import datetime
 
@@ -13,7 +14,8 @@ from ..models.security import Security
 from ..models.portfolio import Portfolio
 from config.settings import (
     SECURITY_CSV_HEADERS, SECURITY_CSV_HEADERS_OLD, SECURITY_CSV_HEADERS_NEW,
-    OUTPUT_CSV_HEADERS, NIFTY100_SECURITIES_FILE, OUTPUT_DIR
+    OUTPUT_CSV_HEADERS, NIFTY100_SECURITIES_FILE, OUTPUT_DIR,
+    NIFTY100_CONSTITUENTS_URL, DEFAULT_CONSTITUENTS_DIR
 )
 
 
@@ -153,7 +155,7 @@ class CSVHandler:
             
         except Exception as e:
             self.logger.error(f"Error writing CSV file: {str(e)}")
-            raise
+            raise RuntimeError(f"Error writing CSV file: {str(e)}") from e
     
     def _validate_security_headers(self, headers: List[str]) -> bool:
         """Validate that CSV has required headers"""
@@ -236,7 +238,7 @@ class CSVHandler:
             return security
             
         except (ValueError, KeyError) as e:
-            raise ValueError(f"Invalid security data: {str(e)}")
+            raise ValueError(f"Invalid security data: {str(e)}") from e
     
     def _create_output_row(self, allocation) -> dict:
         """Create output CSV row from AllocationResult"""
@@ -537,4 +539,96 @@ class CSVHandler:
         total_securities = sum(len(batch) for batch in batches)
         self.logger.info(f"Successfully created {len(json_files)} JSON batch files with {total_securities} total securities")
         
-        return json_files 
+        return json_files
+
+    def download_nifty100_constituents(self, destination_dir: Optional[str] = None) -> str:
+        """
+        Download the official Nifty 100 constituents CSV file from NSE website
+
+        Args:
+            destination_dir: Directory to save the file (uses default if None)
+
+        Returns:
+            Path to downloaded file
+        """
+        if destination_dir is None:
+            destination_dir = DEFAULT_CONSTITUENTS_DIR
+
+        # Ensure destination directory exists
+        os.makedirs(destination_dir, exist_ok=True)
+
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"ind_nifty100list_{timestamp}.csv"
+        output_path = os.path.join(destination_dir, filename)
+
+        self.logger.info(f"Downloading Nifty 100 constituents from {NIFTY100_CONSTITUENTS_URL}")
+        self.logger.info(f"Saving to: {output_path}")
+
+        try:
+            # Download the file with proper headers to avoid blocking
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+
+            response = requests.get(NIFTY100_CONSTITUENTS_URL, headers=headers, timeout=30)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+
+            # Check if the response contains CSV data
+            content_type = response.headers.get('content-type', '').lower()
+            if 'text/csv' not in content_type and 'application/csv' not in content_type:
+                # Check if content looks like CSV by examining first few lines
+                content_preview = response.text[:500]
+                if ',' not in content_preview or 'Company Name' not in content_preview:
+                    raise ValueError(f"Downloaded content does not appear to be CSV data. Content-Type: {content_type}")
+
+            # Save the downloaded content
+            with open(output_path, 'w', encoding='utf-8', newline='') as f:
+                f.write(response.text)
+
+            # Validate the downloaded file by trying to read it
+            self._validate_downloaded_csv(output_path)
+
+            self.logger.info(f"✓ Successfully downloaded Nifty 100 constituents to {output_path}")
+            self.logger.info(f"File size: {len(response.text):,} characters")
+
+            return output_path
+
+        except requests.exceptions.RequestException as e:
+            error_msg = f"Network error while downloading Nifty 100 constituents: {str(e)}"
+            self.logger.error(error_msg)
+            raise ConnectionError(error_msg) from e
+        except Exception as e:
+            error_msg = f"Error downloading Nifty 100 constituents: {str(e)}"
+            self.logger.error(error_msg)
+            raise RuntimeError(error_msg) from e
+
+    def _validate_downloaded_csv(self, file_path: str):
+        """
+        Validate that the downloaded file is a proper CSV with expected structure
+
+        Args:
+            file_path: Path to the CSV file to validate
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                headers = reader.fieldnames
+
+                # Check for expected headers
+                expected_headers = ['Company Name', 'Symbol', 'ISIN Code']
+                missing_headers = [h for h in expected_headers if h not in headers]
+
+                if missing_headers:
+                    raise ValueError(f"Downloaded CSV is missing expected headers: {missing_headers}")
+
+                # Try to read at least one row to ensure file is not empty/corrupt
+                first_row = next(reader, None)
+                if not first_row:
+                    raise ValueError("Downloaded CSV file appears to be empty")
+
+                self.logger.info(f"✓ CSV validation passed. Headers: {list(headers)}")
+
+        except Exception as e:
+            self.logger.error(f"CSV validation failed: {str(e)}")
+            raise

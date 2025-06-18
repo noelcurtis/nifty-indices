@@ -47,10 +47,10 @@ rm -rf data/nifty100_securities.csv
 rm -rf data/nifty100_enhanced_securities.csv
 
 # download the new nifty 100 securities file
-[Nifty100](https://www.niftyindices.com/IndexConstituent/ind_nifty100list.csv)   
+python src/main.py --download-constituents 
 
 # hydrate the nifty100 securities file with price and pe ratio data
-python src/main.py --hydratedata data/ind_nifty100list.csv --output data/nifty100_enhanced_securities.csv
+python src/main.py --hydratedata data/ind_nifty100list_20250618_160752.csv --output data/nifty100_enhanced_securities.csv
 
 # move over to google sheets to exclude relevant securities Or use the nifty100_exclusions.csv
 

@@ -21,7 +21,7 @@ from src.services.price_fetcher import PriceFetcher
 from src.services.allocator import Allocator
 from src.utils.helpers import setup_logging, print_separator, print_summary_table, parse_user_input
 from src.utils.validators import validate_investment_amount
-from config.settings import MIN_INVESTMENT_AMOUNT
+from config.settings import MIN_INVESTMENT_AMOUNT, NIFTY100_CONSTITUENTS_URL
 
 
 class Nifty100Tracker:
@@ -182,6 +182,34 @@ def hydrate_data(input_file: str, output_file: str = None):
         raise
 
 
+def download_constituents(destination_dir: str = None):
+    """Download Nifty100 constituents CSV file from official NSE website"""
+    csv_handler = CSVHandler()
+    
+    try:
+        print_separator("NIFTY 100 CONSTITUENTS DOWNLOAD", "=", 60)
+        print(f"Downloading from: {NIFTY100_CONSTITUENTS_URL}")
+        if destination_dir:
+            print(f"Destination: {destination_dir}")
+        print(f"Start Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print_separator()
+        
+        # Download the constituents file
+        output_path = csv_handler.download_nifty100_constituents(destination_dir)
+        
+        print_separator("DOWNLOAD COMPLETE", "=", 60)
+        print("🎉 Nifty 100 constituents downloaded successfully!")
+        print(f"📁 File saved to: {output_path}")
+        print_separator()
+        
+        return output_path
+        
+    except Exception as e:
+        print(f"\n❌ Error during download: {str(e)}")
+        logging.error(f"Constituents download failed: {str(e)}", exc_info=True)
+        raise
+
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
@@ -192,6 +220,8 @@ Examples:
   %(prog)s --amount 100000                    # Invest ₹1,00,000
   %(prog)s --amount 50000 --securities data/custom.csv  # Use custom securities file
   %(prog)s --amount 100000 --exclusion data/exclusions.csv  # Exclude specific securities
+  %(prog)s --download-constituents            # Download Nifty100 constituents to default location
+  %(prog)s --download-constituents /path/to/dir  # Download to specific directory
   %(prog)s --hydratedata data/nifty100_securities.csv  # Add P/E ratios and prices to CSV
   %(prog)s --hydratedata data/securities.csv --output data/enhanced.csv  # Custom output file
   %(prog)s --create-sample                    # Create sample data file
@@ -237,6 +267,14 @@ Examples:
     )
     
     parser.add_argument(
+        '--download-constituents',
+        type=str,
+        nargs='?',
+        const='',
+        help='Download official Nifty 100 constituents CSV file (optional: specify destination directory)'
+    )
+    
+    parser.add_argument(
         '--hydratedata',
         type=str,
         help='Hydrate securities CSV file with P/E ratios and prices'
@@ -274,6 +312,12 @@ Examples:
     # Handle sample exclusion data creation
     if args.create_exclusion_sample:
         create_sample_exclusion_data()
+        return
+    
+    # Handle constituents download
+    if args.download_constituents is not None:
+        destination = args.download_constituents if args.download_constituents else None
+        download_constituents(destination)
         return
     
     # Handle data hydration
