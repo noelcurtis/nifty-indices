@@ -37,6 +37,27 @@ The Nifty 100 Index Tracker helps retail investors replicate the performance of 
 
 ### Command Line Interface
 
+
+#### Example Usage for Application
+```bash  
+# Scenario: Invest ₹1100000 in with equal weight allocation into a filtered list of securities from the Nifty 100
+
+# remove the old nifty100 securities files
+rm -rf data/nifty100_securities.csv
+rm -rf data/nifty100_enhanced_securities.csv
+
+# download the new nifty 100 securities file
+[Nifty100](https://www.niftyindices.com/IndexConstituent/ind_nifty100list.csv)   
+
+# hydrate the nifty100 securities file with price and pe ratio data
+python src/main.py --hydratedata data/ind_nifty100list.csv --output data/nifty100_enhanced_securities.csv
+
+# move over to google sheets to exclude relevant securities Or use the nifty100_exclusions.csv
+
+# create the index list
+python src/main.py --amount 1100000 --securities data/nifty100_enhanced_securities.csv --exclusion data/nifty100_exclusions.csv
+```
+
 #### Basic Usage
 ```bash
 # Invest ₹1,00,000 with equal weight allocation
@@ -53,6 +74,15 @@ python src/main.py --amount 1100000 --securities data/nifty100_securities.csv --
 
 # Interactive mode
 python src/main.py --interactive
+
+# Basic usage - hydrate the default nifty100 file
+python src/main.py --hydratedata data/nifty100_securities.csv
+
+# Custom output file
+python src/main.py --hydratedata data/nifty100_securities.csv --output data/enhanced_securities.csv
+
+# With logging
+python src/main.py --hydratedata data/securities.csv --log-level DEBUG
 ```
 
 #### Advanced Options
@@ -234,3 +264,22 @@ This project is for educational and personal use only. Please ensure compliance 
 ## Disclaimer
 
 This tool is for informational purposes only and does not constitute financial advice. Users should conduct their own research and consult with financial advisors before making investment decisions. 
+
+================= DATA HYDRATION =================
+Input File: data/nifty100_securities.csv
+Start Time: 2024-01-15 10:30:45
+===============================================
+
+Processing 1/100: RELIANCE
+✓ RELIANCE: P/E=12.45, Price=₹2,847.30
+Processing 2/100: TCS
+✓ TCS: P/E=28.76, Price=₹4,123.50
+...
+
+Data hydration completed: 95/100 successful (95.0%)
+Enhanced data saved to data/output/nifty100_securities_hydrated_20240115_103045.csv
+
+=============== HYDRATION COMPLETE ===============
+🎉 Data hydration completed successfully!
+📁 Enhanced data saved to: data/output/nifty100_securities_hydrated_20240115_103045.csv
+=============================================== 

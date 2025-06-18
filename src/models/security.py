@@ -17,7 +17,9 @@ class Security:
         isin: International Securities Identification Number
         market_cap: Market capitalization
         weightage: Index weightage percentage
-        current_price: Current market price (fetched dynamically)
+        current_price: Current market price (fetched dynamically or from CSV)
+        pe_ratio: Price-to-earnings ratio (fetched dynamically or from CSV)
+        data_loaded_from_csv: Flag indicating if financial data was loaded from CSV
     """
     symbol: str
     company_name: str
@@ -25,6 +27,8 @@ class Security:
     market_cap: float
     weightage: float
     current_price: Optional[float] = None
+    pe_ratio: Optional[float] = None
+    data_loaded_from_csv: bool = False
     
     def __post_init__(self):
         """Validate security data after initialization"""

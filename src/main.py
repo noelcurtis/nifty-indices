@@ -59,6 +59,16 @@ class Nifty100Tracker:
             securities = self.csv_handler.load_securities_from_csv(securities_file)
             print(f"✓ Loaded {len(securities)} securities")
             
+            # Check if any securities have financial data from CSV
+            securities_with_csv_data = [s for s in securities if s.data_loaded_from_csv]
+            if securities_with_csv_data:
+                securities_with_price = [s for s in securities_with_csv_data if s.current_price is not None]
+                securities_with_pe = [s for s in securities_with_csv_data if s.pe_ratio is not None]
+                print(f"✓ Found existing financial data in CSV:")
+                print(f"  • {len(securities_with_price)} securities with price data")
+                print(f"  • {len(securities_with_pe)} securities with P/E ratio data")
+                print(f"  • This will skip {len(securities_with_price)} API calls for optimization")
+            
             # Step 1.5: Filter out excluded securities if exclusion list provided
             if exclusion_file:
                 self.logger.info("Step 1.5: Filtering excluded securities")
@@ -136,6 +146,32 @@ def create_sample_exclusion_data():
     print(f"✓ Sample exclusion data created at {exclusion_file}")
 
 
+def hydrate_data(input_file: str, output_file: str = None):
+    """Hydrate securities data with P/E ratios and prices"""
+    csv_handler = CSVHandler()
+    
+    try:
+        print_separator("DATA HYDRATION", "=", 60)
+        print(f"Input File: {input_file}")
+        print(f"Start Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print_separator()
+        
+        # Hydrate the data
+        output_path = csv_handler.hydrate_securities_data(input_file, output_file)
+        
+        print_separator("HYDRATION COMPLETE", "=", 60)
+        print("🎉 Data hydration completed successfully!")
+        print(f"📁 Enhanced data saved to: {output_path}")
+        print_separator()
+        
+        return output_path
+        
+    except Exception as e:
+        print(f"\n❌ Error during data hydration: {str(e)}")
+        logging.error(f"Data hydration failed: {str(e)}", exc_info=True)
+        raise
+
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
@@ -146,6 +182,8 @@ Examples:
   %(prog)s --amount 100000                    # Invest ₹1,00,000
   %(prog)s --amount 50000 --securities data/custom.csv  # Use custom securities file
   %(prog)s --amount 100000 --exclusion data/exclusions.csv  # Exclude specific securities
+  %(prog)s --hydratedata data/nifty100_securities.csv  # Add P/E ratios and prices to CSV
+  %(prog)s --hydratedata data/securities.csv --output data/enhanced.csv  # Custom output file
   %(prog)s --create-sample                    # Create sample data file
   %(prog)s --create-exclusion-sample          # Create sample exclusion file
   %(prog)s --interactive                      # Interactive mode
@@ -189,6 +227,18 @@ Examples:
     )
     
     parser.add_argument(
+        '--hydratedata',
+        type=str,
+        help='Hydrate securities CSV file with P/E ratios and prices'
+    )
+    
+    parser.add_argument(
+        '--output', '-o',
+        type=str,
+        help='Output file path for hydrated data (optional)'
+    )
+    
+    parser.add_argument(
         '--log-level',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
         default='INFO',
@@ -214,6 +264,11 @@ Examples:
     # Handle sample exclusion data creation
     if args.create_exclusion_sample:
         create_sample_exclusion_data()
+        return
+    
+    # Handle data hydration
+    if args.hydratedata:
+        hydrate_data(args.hydratedata, args.output)
         return
     
     # Get investment amount

@@ -7,7 +7,6 @@ import logging
 import os
 from typing import List, Optional
 from datetime import datetime
-import pandas as pd
 
 from ..models.security import Security
 from ..models.portfolio import Portfolio
@@ -186,7 +185,7 @@ class CSVHandler:
             # Detect format based on available columns
             if 'Symbol' in row and 'Company Name' in row:
                 # New format
-                return Security(
+                security = Security(
                     symbol=row['Symbol'].strip(),
                     company_name=row['Company Name'].strip(),
                     isin=row['ISIN Code'].strip(),
@@ -195,13 +194,46 @@ class CSVHandler:
                 )
             else:
                 # Old format
-                return Security(
+                security = Security(
                     symbol=row['symbol'].strip(),
                     company_name=row['company_name'].strip(),
                     isin=row['isin'].strip(),
                     market_cap=float(row['market_cap']) if row['market_cap'] else 0.0,
                     weightage=float(row['weightage']) if row['weightage'] else 0.0
                 )
+            
+            # Check if CSV already contains financial data
+            has_financial_data = False
+            
+            # Check for price data
+            if 'price' in row and row['price'] and row['price'] != 'N/A':
+                try:
+                    price_value = float(row['price'])
+                    if price_value > 0:
+                        security.current_price = price_value
+                        has_financial_data = True
+                        self.logger.debug(f"Loaded price from CSV for {security.symbol}: ₹{price_value:.2f}")
+                except (ValueError, TypeError):
+                    self.logger.debug(f"Invalid price value in CSV for {security.symbol}: {row['price']}")
+            
+            # Check for P/E ratio data
+            if 'pe_ratio' in row and row['pe_ratio'] and row['pe_ratio'] != 'N/A':
+                try:
+                    pe_value = float(row['pe_ratio'])
+                    if pe_value > 0:
+                        security.pe_ratio = pe_value
+                        has_financial_data = True
+                        self.logger.debug(f"Loaded P/E ratio from CSV for {security.symbol}: {pe_value:.2f}")
+                except (ValueError, TypeError):
+                    self.logger.debug(f"Invalid P/E ratio value in CSV for {security.symbol}: {row['pe_ratio']}")
+            
+            # Set flag if any financial data was loaded from CSV
+            if has_financial_data:
+                security.data_loaded_from_csv = True
+                self.logger.info(f"Financial data loaded from CSV for {security.symbol}")
+            
+            return security
+            
         except (ValueError, KeyError) as e:
             raise ValueError(f"Invalid security data: {str(e)}")
     
@@ -328,4 +360,88 @@ class CSVHandler:
             writer.writerows(sample_exclusion_data)
         
         self.logger.info(f"Sample exclusion CSV created at {exclusion_file}")
-        return exclusion_file 
+        return exclusion_file
+
+    def hydrate_securities_data(self, input_file: str, output_file: Optional[str] = None) -> str:
+        """
+        Hydrate securities data with P/E ratios and prices
+        
+        Args:
+            input_file: Path to input CSV file with securities data
+            output_file: Path to output CSV file (generated if None)
+            
+        Returns:
+            Path to created output file
+        """
+        from ..services.price_fetcher import PriceFetcher
+        
+        self.logger.info(f"Starting data hydration for {input_file}")
+        
+        if not os.path.exists(input_file):
+            raise FileNotFoundError(f"Input file not found: {input_file}")
+        
+        # Generate output filename if not provided
+        if output_file is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            base_name = os.path.splitext(os.path.basename(input_file))[0]
+            output_file = f"data/output/{base_name}_hydrated_{timestamp}.csv"
+        
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        
+        # Read original CSV data
+        self.logger.info("Reading original securities data...")
+        securities_data = []
+        
+        with open(input_file, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            original_headers = reader.fieldnames
+            
+            for row in reader:
+                securities_data.append(row)
+        
+        self.logger.info(f"Loaded {len(securities_data)} securities from input file")
+        
+        # Initialize price fetcher
+        price_fetcher = PriceFetcher()
+        
+        # Create enhanced data with P/E ratios and prices
+        enhanced_data = []
+        successful_fetches = 0
+        
+        for i, row in enumerate(securities_data, 1):
+            symbol = row.get('Symbol') or row.get('symbol', '')
+            
+            self.logger.info(f"Processing {i}/{len(securities_data)}: {symbol}")
+            
+            # Fetch financial metrics
+            metrics = price_fetcher.fetch_financial_metrics(symbol)
+            
+            # Create enhanced row
+            enhanced_row = row.copy()
+            
+            if metrics:
+                enhanced_row['pe_ratio'] = metrics.get('pe_ratio') or 'N/A'
+                enhanced_row['price'] = metrics.get('current_price') or 'N/A'
+                successful_fetches += 1
+                self.logger.info(f"✓ {symbol}: P/E={enhanced_row['pe_ratio']}, Price=₹{enhanced_row['price']}")
+            else:
+                enhanced_row['pe_ratio'] = 'N/A'
+                enhanced_row['price'] = 'N/A'
+                self.logger.warning(f"✗ {symbol}: Failed to fetch data")
+            
+            enhanced_data.append(enhanced_row)
+        
+        # Write enhanced data to output file
+        enhanced_headers = list(original_headers) + ['pe_ratio', 'price']
+        
+        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=enhanced_headers)
+            writer.writeheader()
+            writer.writerows(enhanced_data)
+        
+        success_rate = (successful_fetches / len(securities_data)) * 100
+        self.logger.info(f"Data hydration completed: {successful_fetches}/{len(securities_data)} successful ({success_rate:.1f}%)")
+        self.logger.info(f"Enhanced data saved to {output_file}")
+        
+        return output_file 
