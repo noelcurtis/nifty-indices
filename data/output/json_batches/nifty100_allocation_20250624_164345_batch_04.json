@@ -2,6 +2,29 @@
   {
     "instrument": {
       "exchange": "NSE",
+      "symbol": "TATAPOWER",
+      "tradingsymbol": "TATAPOWER",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 41,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
       "symbol": "TATASTEEL",
       "tradingsymbol": "TATASTEEL",
       "type": "EQ"
@@ -12,7 +35,7 @@
       "orderType": "MARKET",
       "price": 0,
       "product": "CNC",
-      "quantity": 107,
+      "quantity": 106,
       "tags": [],
       "transactionType": "BUY",
       "triggerPrice": 0,
@@ -58,7 +81,7 @@
       "orderType": "MARKET",
       "price": 0,
       "product": "CNC",
-      "quantity": 34,
+      "quantity": 35,
       "tags": [],
       "transactionType": "BUY",
       "triggerPrice": 0,
@@ -81,7 +104,7 @@
       "orderType": "MARKET",
       "price": 0,
       "product": "CNC",
-      "quantity": 35,
+      "quantity": 36,
       "tags": [],
       "transactionType": "BUY",
       "triggerPrice": 0,
