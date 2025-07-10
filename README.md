@@ -45,12 +45,13 @@ The Nifty 100 Index Tracker helps retail investors replicate the performance of 
 # remove the old nifty100 securities files
 rm -rf data/nifty100_securities.csv
 rm -rf data/nifty100_enhanced_securities.csv
+rm -rf data/output/json_batches
 
 # download the new nifty 100 securities file
 python src/main.py --download-constituents 
 
 # hydrate the nifty100 securities file with price and pe ratio data
-python src/main.py --hydratedata data/ind_nifty100list_20250618_160752.csv --output data/nifty100_enhanced_securities.csv
+python src/main.py --hydratedata data/ind_nifty100list_20250709_231051.csv --output data/nifty100_enhanced_securities.csv
 
 # move over to google sheets to exclude relevant securities Or use the nifty100_exclusions.csv
 
