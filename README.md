@@ -71,7 +71,7 @@ python src/main.py --amount 50000 --securities data/custom_securities.csv
 python src/main.py --amount 100000 --exclusion data/exclusions.csv
 
 # Combine custom securities and exclusion lists
-python src/main.py --amount 1100000 --securities data/nifty100_securities.csv --exclusion data/nifty100_exclusions.csv
+python src/main.py --amount 600000 --securities data/nifty100_enhanced_securities.csv --exclusion data/nifty100_exclusions.csv
 
 # Interactive mode
 python src/main.py --interactive

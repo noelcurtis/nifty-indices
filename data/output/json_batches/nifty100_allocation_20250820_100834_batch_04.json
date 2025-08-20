@@ -1,0 +1,48 @@
+[
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "VEDL",
+      "tradingsymbol": "VEDL",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 20,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  },
+  {
+    "instrument": {
+      "exchange": "NSE",
+      "symbol": "ZYDUSLIFE",
+      "tradingsymbol": "ZYDUSLIFE",
+      "type": "EQ"
+    },
+    "params": {
+      "disclosedQuantity": 0,
+      "gtt": null,
+      "orderType": "MARKET",
+      "price": 0,
+      "product": "CNC",
+      "quantity": 9,
+      "tags": [],
+      "transactionType": "BUY",
+      "triggerPrice": 0,
+      "validity": "DAY",
+      "validityTTL": 1,
+      "variety": "regular"
+    },
+    "weight": 0
+  }
+]
